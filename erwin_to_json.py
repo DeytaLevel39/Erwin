@@ -121,14 +121,18 @@ def fetch_model():
 
 model = fetch_model()
 
-def dv2_model(model):
-    print(model)
+def create_3nf_model(model):
     for subject_area in model["Subject Areas"]:
         for entity in subject_area["Entities"]:
-            print(entity["Entity Name"])
+            table_stmt = "CREATE TABLE %s\n("%entity["Entity Name"]
+            for index, attribute in enumerate(entity["Attributes"]):
+                table_stmt += "\n\t%s %s %s"%(attribute["Attribute Name"],attribute["Attribute Data Type"],attribute["Not Null Flag"].upper())
+                if index != len(entity["Attributes"]):
+                    table_stmt+=","
+            table_stmt+="\n);\n"
+            print(table_stmt)
 
-
-dv2_model(model)
+create_3nf_model(model)
 
 
 

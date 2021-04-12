@@ -132,7 +132,36 @@ def create_3nf_model(model):
             table_stmt+="\n);\n"
             print(table_stmt)
 
-create_3nf_model(model)
+def create_dv2_hub(entity):
+    for index, attribute in enumerate(entity["Attributes"]):
+        table_stmt = "CREATE TABLE %s_HUB\n("%entity["Entity Name"].replace(" ","_").upper()
+        for attribute in entity["Attributes"]:
+            if attribute["Primary Key Flag"]=="Primary Key":
+                table_stmt += "\n\t%s %s %s" % (attribute["Attribute Name"].replace(" ","_").upper(), attribute["Attribute Data Type"], attribute["Not Null Flag"].upper())
+        table_stmt += ",\n\tLOAD_DATE DATE NOT NULL,\n\tSOURCE VARCHAR(100) NOT NULL,\n\tEFFECTIVE_FROM DATE NOT NULL"
+        table_stmt += ",\n\t%s_HASH CHAR(64) NOT NULL\n);\n"%(entity["Entity Name"].replace(" ","_").upper())
+    print(table_stmt)
+
+def create_dv2_sat(entity):
+    for attribute in entity["Attributes"]:
+        table_stmt = "CREATE TABLE %s_SAT\n("%entity["Entity Name"].replace(" ","_").upper()
+        for attribute in entity["Attributes"]:
+            if attribute["Primary Key Flag"]!="Primary Key":
+                table_stmt += "\n\t%s %s %s" % (attribute["Attribute Name"].replace(" ","_").upper(), attribute["Attribute Data Type"], attribute["Not Null Flag"].upper())
+        table_stmt += ",\n\tLOAD_DATE DATE NOT NULL,\n\tSOURCE VARCHAR(100) NOT NULL,\n\tEFFECTIVE_FROM DATE NOT NULL"
+        table_stmt += ",\n\t%s_HASH CHAR(64) NOT NULL"%(entity["Entity Name"].replace(" ","_").upper())
+        table_stmt += ",\n\tHASHDIFF CHAR(64) NOT NULL\n);\n"
+    print(table_stmt)
+
+def create_dv2_model(model):
+    for subject_area in model["Subject Areas"]:
+        for entity in subject_area["Entities"]:
+            create_dv2_hub(entity)
+            create_dv2_sat(entity)
+
+#create_3nf_model(model)
+
+create_dv2_model(model)
 
 
 

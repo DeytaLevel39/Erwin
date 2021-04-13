@@ -185,7 +185,9 @@ def create_dv2_sat(entity):
         for attribute in entity["Attributes"]:
             if attribute["Primary Key Flag"]!="Primary Key":
                 table_stmt += "\n\t%s %s %s" % (attribute["Attribute Name"].replace(" ","_").upper(), attribute["Attribute Data Type"], attribute["Not Null Flag"].upper())
-        table_stmt += ",\n\tLOAD_DATE DATE NOT NULL,\n\tSOURCE VARCHAR(100) NOT NULL,\n\tEFFECTIVE_FROM DATE NOT NULL"
+        table_stmt += ",\n\tLOAD_DATE DATE NOT NULL,\n\tSOURCE VARCHAR(100) NOT NULL"
+        table_stmt += ",\n\tEFFECTIVE_FROM DATE NOT NULL"
+        table_stmt += ",\n\tEFFECTIVE_TO DATE NULL"
         table_stmt += ",\n\t%s_HASH CHAR(64) NOT NULL"%(entity["Entity Name"].replace(" ","_").upper())
         table_stmt += ",\n\t%s_SK IDENTITY NOT NULL"%(entity["Entity Name"].replace(" ","_").upper())
         table_stmt += ",\n\tHASHDIFF CHAR(64) NOT NULL\n);\n"
